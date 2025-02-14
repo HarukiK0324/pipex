@@ -3,86 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/25 19:40:55 by rkaga             #+#    #+#             */
-/*   Updated: 2025/02/13 19:43:24 by hkasamat         ###   ########.fr       */
+/*   Created: 2025/01/26 02:21:04 by haruki            #+#    #+#             */
+/*   Updated: 2025/02/14 16:32:29 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	child_process(int *pipe_fd, char *cmd, char **envp)
-{
-	char	**cmd_args;
+int main() {
+    pid_t pid = fork();
 
-	close(pipe_fd[0]);
-	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		perror("dup2");
-	cmd_args = ft_split(cmd, ' ');
-	if (execve(cmd_args[0], cmd_args, envp) == -1)
-	{
-		perror("execve");
-		exit(EXIT_FAILURE);
-	}
-}
+    if (pid < 0) {
+        perror("fork failed");
+        exit(EXIT_FAILURE);
+    }
 
-void	second_process(int *pipe_fd, char *cmd, char **envp, char *file2)
-{
-	char	**cmd_args;
-	int		file;
+    if (pid == 0) {
+        printf("Child process: Executing 'ls -l'\n");
+        char *args[] = {"ls", "-l", NULL};
+        char *env[] = {NULL};
+        if (execve("/bin/ls", args, env) == -1) {
+            perror("execve failed");
+            exit(EXIT_FAILURE);  //execve fails
+        }
+    } else {
+        printf("Parent process: Waiting for child to complete\n");
+        int status;
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status)) {
+            printf("Child exited with status %d\n", WEXITSTATUS(status));
+        } else {
+            printf("Child did not terminate normally\n");
+        }
+    }
 
-	close(pipe_fd[1]);
-	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-		perror("dup2");
-	file = open(file2, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (file == -1)
-	{
-		perror("open");
-		exit(EXIT_FAILURE);
-	}
-	if (dup2(file, STDOUT_FILENO) == -1)
-		perror("dup2");
-	cmd_args = ft_split(cmd, ' ');
-	if (execve(cmd_args[0], cmd_args, envp) == -1)
-	{
-		perror("execve");
-		exit(EXIT_FAILURE);
-	}
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	int		pipe_fd[2];
-	int		file1;
-	pid_t	child_pid1;
-	pid_t	child_pid2;
-
-	if (argc != 5)
-		return (write(1, "Use format ./pipex file1 cmd1 cmd2 file2\n", 42), 1);
-	file1 = open(argv[1], O_RDONLY);
-	if (file1 == -1)
-		return (perror("open"), 1);
-	if (pipe(pipe_fd) == -1)
-		return (perror("pipe"), 1);
-	child_pid1 = fork();
-	if (child_pid1 == -1)
-		return (perror("fork"), 1);
-	if (child_pid1 == 0)
-	{
-		if (dup2(file1, STDIN_FILENO) == -1)
-			perror("dup2");
-		child_process(pipe_fd, argv[2], envp);
-	}
-	child_pid2 = fork();
-	if (child_pid2 == -1)
-		return (perror("fork"), 1);
-	if (child_pid2 == 0)
-		second_process(pipe_fd, argv[3], envp, argv[4]);
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	waitpid(child_pid1, NULL, 0);
-	waitpid(child_pid2, NULL, 0);
-	close(file1);
-	return (0);
+    return 0;
 }
