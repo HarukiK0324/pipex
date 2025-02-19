@@ -6,11 +6,45 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 12:51:09 by haruki            #+#    #+#             */
-/*   Updated: 2025/02/16 12:56:19 by haruki           ###   ########.fr       */
+/*   Updated: 2025/02/19 23:01:25 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int ft_strlen(char *s)
+{
+    int i;
+
+    i = 0;
+    while(s[i])
+        i++;
+    return (i);
+}
+
+char *ft_join(char *s1, char *s2)
+{
+    char *str;
+    int i;
+
+    i = 0;
+    str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+    if (!str)
+        return (NULL);
+    while(s1[i] != '\0')
+    {
+        str[i] = s1[i];
+        i++;
+    }
+    while(*s2 != '\0')
+    {
+        str[i] = *s2;
+        i++;
+        s2++;
+    }
+    str[i] = '\0';
+    return (str);
+}
 
 unsigned int	count_words(const char *s, char c)
 {
