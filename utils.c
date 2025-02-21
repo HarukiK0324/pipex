@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 12:51:09 by haruki            #+#    #+#             */
-/*   Updated: 2025/02/19 23:01:25 by haruki           ###   ########.fr       */
+/*   Updated: 2025/02/21 14:56:20 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,4 +128,30 @@ char	**ft_split(char const *s, char c)
 	}
 	arr[i] = NULL;
 	return (arr);
+}
+
+char *ft_join_with_space(char *s1,char *s2)
+{
+    char *str;
+    int i;
+
+    str = malloc(ft_strlen(s1) + ft_strlen(s2) + 2);
+    i = 0;
+    if (!str)
+        return (NULL);
+    while(s1[i] != '\0')
+    {
+        str[i] = s1[i];
+        i++;
+    }
+    str[i] = ' ';
+    i++;
+    while(*s2 != '\0')
+    {
+        str[i] = *s2;
+        i++;
+        s2++;
+    }
+    str[i] = '\0';
+    return (str);
 }
