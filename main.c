@@ -14,14 +14,29 @@
 
 extern char    **environ;
 
-int ft_access(char *path)
+int	ft_strncmp(const char *s1, const char *s2, unsigned int n)
 {
+	while (*s1 != '\0' && (*s1 == *s2) && n > 0)
+	{
+		s1++;
+		s2++;
+		n--;
+	}
+	if (n == 0)
+		return (0);
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
+
+char *ft_access(char *path,char *cmd)
+{
+    char *tmp;
+
+    tmp = ft_strjoin(path, "/");
+    path = ft_strjoin(tmp, cmd);
+    free(tmp);
     if(access(path, F_OK) == 0)
-    {
-        free(path);
-        return 0;
-    }
-    return 1;
+        return path;
+    return NULL;
 }
 char *get_path(char *argv)
 {
@@ -29,17 +44,26 @@ char *get_path(char *argv)
     int i;
     char *path;
 
-
     i = 0;
-    paths = ft_split(environ + 5, ':');
+    while(*environ != NULL)
+    {
+        if(ft_strncmp(*environ, "PATH=", 5) == 0)
+            break;
+        environ++;
+    }
+    paths = ft_split(*environ + 5, ':');
     if(!paths || !argv)
         return (perror("split failed"),NULL);
     while(paths[i] != NULL)
     {
-        if(ft_access(ft_join(paths[i],argv)) == 0)
-            path = paths[i];
-        paths++;
+        if((path = ft_access(paths[i],argv)) != NULL)
+            break;
+        i++;
     }
+    i = -1;
+    while(paths[i++])
+        free(paths[i]);
+    free(paths);
     return path;
 }
 

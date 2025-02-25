@@ -1,52 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/16 12:51:09 by haruki            #+#    #+#             */
-/*   Updated: 2025/02/25 17:35:38 by haruki           ###   ########.fr       */
+/*   Created: 2024/11/09 16:46:39 by hkasamat          #+#    #+#             */
+/*   Updated: 2025/02/25 17:28:22 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int ft_strlen(char *s)
+static int ft_strlen(char *str)
 {
-    int i;
+	int len;
 
-    i = 0;
-    while(s[i])
-        i++;
-    return (i);
+	len = 0;
+	if(str == NULL)
+		return 0;
+	while(str[len] != '\0')
+		len++;
+	return len;
 }
 
-char *ft_join(char *s1, char *s2)
-{
-    char *str;
-    int i;
-
-    i = 0;
-    str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-    if (!str)
-        return (NULL);
-    while(s1[i] != '\0')
-    {
-        str[i] = s1[i];
-        i++;
-    }
-    while(*s2 != '\0')
-    {
-        str[i] = *s2;
-        i++;
-        s2++;
-    }
-    str[i] = '\0';
-    return (str);
-}
-
-unsigned int	count_words(const char *s, char c)
+static unsigned int	count_words(const char *s, char c)
 {
 	unsigned int	count;
 	unsigned int	in_word;
@@ -67,7 +45,7 @@ unsigned int	count_words(const char *s, char c)
 	return (count);
 }
 
-char	*substring(char const *s, unsigned int index, char c)
+static char	*substring(char const *s, unsigned int index, char c)
 {
 	unsigned int	len;
 	unsigned int	i;
@@ -78,8 +56,8 @@ char	*substring(char const *s, unsigned int index, char c)
 	while (s[index + len] != '\0' && s[index + len] != c)
 		len++;
 	str = malloc(len + 1);
-	if (str == NULL)
-		return (NULL);
+	if (str == (void *)0)
+		return ((void *)0);
 	while (i < len)
 	{
 		str[i] = s[index + i];
@@ -89,7 +67,7 @@ char	*substring(char const *s, unsigned int index, char c)
 	return (str);
 }
 
-void	free_all(char **arr, unsigned int i)
+static void	free_all(char **arr, unsigned int i)
 {
 	unsigned int	index;
 
@@ -111,21 +89,21 @@ char	**ft_split(char const *s, char c)
 	i = 0;
 	index = 0;
 	arr = malloc((count_words(s, c) + 1) * sizeof(char *));
-	if (arr == NULL)
-		return (NULL);
+	if (arr == (void *)0)
+		return ((void *)0);
 	while (i < count_words(s, c))
 	{
 		while (s[index] == c)
 			index++;
 		arr[i] = substring(s, index, c);
-		if (arr[i] == NULL)
+		if (arr[i] == (void *)0)
 		{
 			free_all(arr, i);
-			return (NULL);
+			return ((void *)0);
 		}
 		index += ft_strlen(arr[i]);
 		i++;
 	}
-	arr[i] = NULL;
+	arr[i] = (void *)0;
 	return (arr);
 }
