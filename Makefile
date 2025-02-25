@@ -1,27 +1,29 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I.
-
 NAME = pipex
+
 SRC_DIR = .
 OBJ_DIR = obj
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
-SRC = $(wildcard *.c)
-OBJ = $(SRC:.c=.o)
+all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar rcs $@ $^
+	$(CC) $(OBJ) -o $(NAME)
 
-%.o: %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
 clean:
-	rm -f $(OBJ)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
-
-all: $(NAME)
 
 .PHONY: all clean fclean re
