@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/02/26 01:11:31 by haruki           ###   ########.fr       */
+/*   Updated: 2025/02/26 01:19:58 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,3 +132,5 @@ int	main(int argc, char *argv[])
 	perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2");
 	return (0);
 }
+gcc -g -o test_leak test_leak.c
+valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./test_leak
