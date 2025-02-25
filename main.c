@@ -12,11 +12,35 @@
 
 #include "pipex.h"
 
-void exec_cmd(char *path,char **args)
+extern char    **environ;
+
+int ft_access(char *path)
 {
-    if(execve(path, args, NULL) == -1)
-        perror("execve failed");
-    return;
+    if(access(path, F_OK) == 0)
+    {
+        free(path);
+        return 0;
+    }
+    return 1;
+}
+char *get_path(char *argv)
+{
+    char **paths;
+    int i;
+    char *path;
+
+
+    i = 0;
+    paths = ft_split(environ + 5, ':');
+    if(!paths || !argv)
+        return (perror("split failed"),NULL);
+    while(paths[i] != NULL)
+    {
+        if(ft_access(ft_join(paths[i],argv)) == 0)
+            path = paths[i];
+        paths++;
+    }
+    return path;
 }
 
 int ft_exec(char *cmd)
@@ -27,71 +51,59 @@ int ft_exec(char *cmd)
 
     i = 0;
     args = ft_split(cmd, ' ');
-    if(!args)
-        return (perror("exec failed"),1);
-    path = ft_join("/usr/bin/",args[0]);
-    if(!path)
-        return (perror("exec failed"),1);
-    exec_cmd(path,args);
-    while(args[i])
+    path = get_path(args[0]);
+    if(path && args)
+        execve(path, args, NULL);
+    while(args && args[i])
     {
         free(args[i]);
         i++;
     }
     free(args);
     free(path);
-    return (0);
+    return (perror("exec failed"),1);
 }
 
-int write_result(int *p, char *file)
+void exec_cmd(char *argv)
 {
-    int fd;
-    char *line;
+    int fd[2];
+    pid_t pid;
 
-    close(p[1]);
-    fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if(fd == -1)
-        return (perror("open failed"),1);
-    while(get_next_line(p[0],&line) > 0)
+    if((pid = fork()) == -1)
+        return (perror("fork failed"),1);
+    if(pid == 0)
     {
-        write(fd, line, ft_strlen(line));
-        write(fd, "\n", 1);
-        free(line);
+        close(fd[0]);
+        dup2(fd[1], STDOUT_FILENO);
+        ft_exec(argv);
     }
-    close(fd);
-    return (0);
+    else if(pid > 0)
+    {
+        close(fd[1]);
+        dup2(fd[0], STDIN_FILENO);
+        waitpid(pid, NULL, 0);
+    }
 }
 
 int	main(int argc, char *argv[])
 {
-    int p[2];
     int i;
-    pid_t pid;
+    int infile;
+    int outfile;
 
-    i = 2;
-    if(pipe(p) == -1)
-        return (perror("pipe failed"),1);
-    dup2(p[1], 1);
-    close(p[1]);
-    dup2(p[0], 0);
-    close(p[0]);
-    argv[2] = ft_join_with_space(argv[2],argv[1]);
-    while(i < argc-1)
+    if(argc >= 5)
     {
-        if((pid = fork()) == -1)
-            return (perror("fork failed"),1);
-        if(pid == 0)
+        i = 2;
+        infile = open(argv[1], O_RDONLY | O_CREAT | O_TRUNC, 0644);
+        outfile = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        dup2(infile, STDIN_FILENO);
+        while(i < argc - 2)
         {
-            if(ft_exec(argv[i]) == 1)
-                return (1);
-        }else if(pid > 0)
-        {
-            wait(NULL);
-            free(argv[i]);
+            exec_cmd(argv[i]);
+            i++;
         }
-        i++;
+        dup2(outfile, STDOUT_FILENO);
+        ft_exec(argv[i]);
     }
-    if(write_result(&p, argv[argc-1]) == -1)
-        return (perror("failed to write"),1);
 	return (0);
 }
