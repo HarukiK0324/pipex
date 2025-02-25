@@ -6,20 +6,22 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 12:51:09 by haruki            #+#    #+#             */
-/*   Updated: 2025/02/25 17:35:38 by haruki           ###   ########.fr       */
+/*   Updated: 2025/02/26 00:04:57 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int ft_strlen(char *s)
+int ft_strlen(char *str)
 {
-    int i;
+	int len;
 
-    i = 0;
-    while(s[i])
-        i++;
-    return (i);
+	len = 0;
+	if(str == NULL)
+		return 0;
+	while(str[len] != '\0')
+		len++;
+	return len;
 }
 
 char *ft_join(char *s1, char *s2)
@@ -27,6 +29,8 @@ char *ft_join(char *s1, char *s2)
     char *str;
     int i;
 
+	if(!s1 || !s2)
+		return (NULL);
     i = 0;
     str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
     if (!str)

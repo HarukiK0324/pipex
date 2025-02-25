@@ -31,9 +31,12 @@ char *ft_access(char *path,char *cmd)
 {
     char *tmp;
 
-    tmp = ft_strjoin(path, "/");
-    path = ft_strjoin(tmp, cmd);
-    free(tmp);
+    tmp = ft_join(path, "/");
+    if(!path)
+        free(path);
+    path = ft_join(tmp, cmd);
+    if(!tmp)
+        free(tmp);
     if(access(path, F_OK) == 0)
         return path;
     return NULL;
@@ -61,7 +64,7 @@ char *get_path(char *argv)
         i++;
     }
     i = -1;
-    while(paths[i++])
+    while(paths[++i])
         free(paths[i]);
     free(paths);
     return path;
@@ -93,18 +96,22 @@ void exec_cmd(char *argv)
     int fd[2];
     pid_t pid;
 
+    if(pipe(fd) == -1)
+        return perror("pipe failed");
     if((pid = fork()) == -1)
-        return (perror("fork failed"),1);
+        return perror("fork failed");
     if(pid == 0)
     {
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
+        close(fd[1]);
         ft_exec(argv);
     }
     else if(pid > 0)
     {
         close(fd[1]);
         dup2(fd[0], STDIN_FILENO);
+        close(fd[0]);
         waitpid(pid, NULL, 0);
     }
 }
@@ -118,15 +125,21 @@ int	main(int argc, char *argv[])
     if(argc >= 5)
     {
         i = 2;
-        infile = open(argv[1], O_RDONLY | O_CREAT | O_TRUNC, 0644);
+        infile = open(argv[1], O_RDONLY);
+        if(infile == -1)
+            return (perror("open failed"),1);
         outfile = open(argv[argc-1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if(outfile == -1)
+            return (perror("open failed"),1);
         dup2(infile, STDIN_FILENO);
+        close(infile);
         while(i < argc - 2)
         {
             exec_cmd(argv[i]);
             i++;
         }
         dup2(outfile, STDOUT_FILENO);
+        close(outfile);
         ft_exec(argv[i]);
     }
 	return (0);
