@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/02/26 00:39:55 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/02/26 01:11:31 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ char	*ft_access(char *path, char *cmd)
 	char	*tmp;
 
 	tmp = ft_join(path, "/");
-	if (!path)
-		free(path);
 	path = ft_join(tmp, cmd);
-	if (!tmp)
+	if (tmp)
 		free(tmp);
 	if (access(path, F_OK) == 0)
 		return (path);
+	if (path)
+		free(path);
 	return (NULL);
 }
 
@@ -51,9 +51,9 @@ char	*get_path(char *argv)
 			break ;
 		i++;
 	}
-	i = -1;
-	while (paths[++i])
-		free(paths[i]);
+	i = 0;
+	while (paths[i])
+		free(paths[i++]);
 	free(paths);
 	return (path);
 }
@@ -115,10 +115,8 @@ int	main(int argc, char *argv[])
 	{
 		i = 2;
 		infile = open(argv[1], O_RDONLY);
-		if (infile == -1)
-			return (perror("open failed"), 1);
 		outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (outfile == -1)
+		if (infile == -1 || outfile == -1)
 			return (perror("open failed"), 1);
 		dup2(infile, STDIN_FILENO);
 		close(infile);
@@ -131,5 +129,6 @@ int	main(int argc, char *argv[])
 		close(outfile);
 		ft_exec(argv[i]);
 	}
+	perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2");
 	return (0);
 }
