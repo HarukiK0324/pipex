@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:35:30 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/02/26 00:35:43 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/18 22:14:44 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+#include "get_next_line.h"
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>

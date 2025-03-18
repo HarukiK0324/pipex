@@ -4,6 +4,7 @@ NAME = pipex
 
 SRC_DIR = .
 OBJ_DIR = obj
+
 SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 

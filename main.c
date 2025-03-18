@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/18 18:29:28 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/18 23:25:21 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,22 +105,30 @@ void	exec_cmd(char *argv)
 	}
 }
 
-void	get_cmd(char *limiter, int outfile)
+void	get_input(char *limiter)
 {
+	pid_t pid;
 	char	*line;
-
-	line = NULL;
-	while (1)
+	int fd[2];
+	
+	if (pipe(fd) == -1)
+		return (perror("pipe failed"));
+	pid = fork();
+	if(pid == 0)
 	{
-		line = readline("here_doc> ");
-		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
-			break ;
-		write(outfile, line, ft_strlen(line));
-		write(outfile, "\n", 1);
-		free(line);
+		close(fd[0]);
+		while((line = get_next_line(STDIN_FILENO)))
+		{
+			if(ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+				exit(0);
+			write(fd[1], line, ft_strlen(line));
+		}
+	}else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		wait(NULL);
 	}
-	free(line);
-	close(outfile);
 }
 
 int	main(int argc, char *argv[])
@@ -135,7 +143,7 @@ int	main(int argc, char *argv[])
 		{
 			i = 3;
 			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-			get_cmd(argv[2], outfile);
+			get_input(argv[2]);
 		}
 		else
 		{
