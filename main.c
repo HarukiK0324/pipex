@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/18 18:16:52 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/18 18:29:28 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,24 @@ void	exec_cmd(char *argv)
 	}
 }
 
+void	get_cmd(char *limiter, int outfile)
+{
+	char	*line;
+
+	line = NULL;
+	while (1)
+	{
+		line = readline("here_doc> ");
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+			break ;
+		write(outfile, line, ft_strlen(line));
+		write(outfile, "\n", 1);
+		free(line);
+	}
+	free(line);
+	close(outfile);
+}
+
 int	main(int argc, char *argv[])
 {
 	int	i;
@@ -117,6 +135,7 @@ int	main(int argc, char *argv[])
 		{
 			i = 3;
 			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+			get_cmd(argv[2], outfile);
 		}
 		else
 		{
@@ -130,6 +149,5 @@ int	main(int argc, char *argv[])
 		dup2(outfile, STDOUT_FILENO);
 		ft_exec(argv[i]);
 	}
-	perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2");
-	return (0);
+	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"),1);
 }
