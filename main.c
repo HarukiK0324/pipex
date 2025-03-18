@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/02/26 01:19:58 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/18 18:04:34 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,17 +114,17 @@ int	main(int argc, char *argv[])
 	if (argc >= 5)
 	{
 		i = 2;
+		if(ft_strncmp(argv[1], "here_doc", 8) == 0)
+			outfile = open(argv, O_WRONLY | O_CREAT | O_APPEND, 0777);
+		else
+			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		infile = open(argv[1], O_RDONLY);
-		outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (infile == -1 || outfile == -1)
 			return (perror("open failed"), 1);
 		dup2(infile, STDIN_FILENO);
 		close(infile);
-		while (i < argc - 2)
-		{
+		while (++i < argc - 2)
 			exec_cmd(argv[i]);
-			i++;
-		}
 		dup2(outfile, STDOUT_FILENO);
 		close(outfile);
 		ft_exec(argv[i]);
@@ -132,5 +132,3 @@ int	main(int argc, char *argv[])
 	perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2");
 	return (0);
 }
-gcc -g -o test_leak test_leak.c
-valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./test_leak
