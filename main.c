@@ -3,31 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/18 23:25:21 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/27 18:29:48 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 extern char	**environ;
-
-char	*ft_access(char *path, char *cmd)
-{
-	char	*tmp;
-
-	tmp = ft_join(path, "/");
-	path = ft_join(tmp, cmd);
-	if (tmp)
-		free(tmp);
-	if (access(path, F_OK) == 0)
-		return (path);
-	if (path)
-		free(path);
-	return (NULL);
-}
 
 char	*get_path(char *argv)
 {
@@ -107,23 +92,26 @@ void	exec_cmd(char *argv)
 
 void	get_input(char *limiter)
 {
-	pid_t pid;
+	pid_t	pid;
 	char	*line;
-	int fd[2];
-	
+	int		fd[2];
+
 	if (pipe(fd) == -1)
 		return (perror("pipe failed"));
 	pid = fork();
-	if(pid == 0)
+	if (pid == 0)
 	{
 		close(fd[0]);
-		while((line = get_next_line(STDIN_FILENO)))
+		line = get_next_line(STDIN_FILENO);
+		while (line)
 		{
-			if(ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
 				exit(0);
 			write(fd[1], line, ft_strlen(line));
+			line = get_next_line(STDIN_FILENO);
 		}
-	}else
+	}
+	else
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
@@ -139,7 +127,7 @@ int	main(int argc, char *argv[])
 
 	if (argc >= 5)
 	{
-		if(ft_strncmp(argv[1], "here_doc", 8) == 0)
+		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		{
 			i = 3;
 			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -157,5 +145,5 @@ int	main(int argc, char *argv[])
 		dup2(outfile, STDOUT_FILENO);
 		ft_exec(argv[i]);
 	}
-	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"),1);
+	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"), 1);
 }

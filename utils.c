@@ -6,7 +6,7 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:36:01 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/02/26 00:37:43 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/27 18:27:13 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,19 @@ int	ft_strncmp(const char *s1, const char *s2, unsigned int n)
 	if (n == 0)
 		return (0);
 	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
+
+char	*ft_access(char *path, char *cmd)
+{
+	char	*tmp;
+
+	tmp = ft_join(path, "/");
+	path = ft_join(tmp, cmd);
+	if (tmp)
+		free(tmp);
+	if (access(path, F_OK) == 0)
+		return (path);
+	if (path)
+		free(path);
+	return (NULL);
 }

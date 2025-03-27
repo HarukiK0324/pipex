@@ -6,7 +6,7 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 14:14:07 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/01/09 20:36:29 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/27 18:37:50 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_first_line(char *line);
 char	*update_line(char *line, char **first_line);
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 10000
 # endif
 
 #endif
