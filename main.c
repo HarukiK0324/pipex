@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/27 18:29:48 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:25:04 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ char	*get_path(char *argv)
 			break ;
 	}
 	paths = ft_split(*environ + 5, ':');
-	if (!paths || !argv)
-		return (perror("split failed"), NULL);
 	while (paths[i] != NULL)
 	{
 		path = ft_access(paths[i], argv);
@@ -40,6 +38,8 @@ char	*get_path(char *argv)
 	while (paths[i])
 		free(paths[i++]);
 	free(paths);
+	if(path == NULL)
+		cmd_error("zsh: command not found: ", argv);
 	return (path);
 }
 
@@ -125,7 +125,7 @@ int	main(int argc, char *argv[])
 	int	infile;
 	int	outfile;
 
-	if (argc >= 5)
+	if ((ft_strncmp(argv[1], "here_doc", 8) != 0 && argc >= 5) || argc >= 6)
 	{
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		{
