@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 17:21:54 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/28 18:39:06 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*get_path(char *argv)
 	return (path);
 }
 
-int	ft_exec(char *cmd)
+void	ft_exec(char *cmd)
 {
 	int		i;
 	char	**args;
@@ -52,16 +52,20 @@ int	ft_exec(char *cmd)
 	i = 0;
 	args = ft_split(cmd, ' ');
 	path = get_path(args[0]);
-	if (path && args)
-		execve(path, args, NULL);
-	while (args && args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-	free(path);
-	return (perror("exec failed"), 1);
+    if(execve(path, args, NULL) == -1)
+    {
+        write(2,"zsh: command not found: ", 24);
+        write(2, args[0], ft_strlen(args[0]));
+        write(2, "\n", 1);
+        while (args && args[i])
+        {
+            free(args[i]);
+            i++;
+        }
+        free(args);
+        free(path);
+        exit(0);
+    }
 }
 
 int	open_file(char *argv, int i)
