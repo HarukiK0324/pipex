@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:35:30 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 18:39:12 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/28 19:26:19 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int				ft_strncmp(const char *s1, const char *s2, unsigned int n);
 char			*ft_access(char *path, char *cmd);
 char			*get_path(char *argv);
 void				ft_exec(char *cmd);
-void			exec_cmd(char *argv);
+void			exec_cmd(char *argv,int *infile);
 int				ft_strlen(char *s);
 char			*ft_join(char *s1, char *s2);
 unsigned int	count_words(const char *s, char c);
