@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 16:25:04 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/28 17:12:46 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,23 @@ void	get_input(char *limiter)
 	}
 }
 
+void here_doc(int argc, char *argv[])
+{
+	int i;
+	int outfile;
+
+
+	i = 3;
+	outfile = open_file(argv[argc - 1], 2);
+	get_input(argv[2]);
+	while (i < argc - 2)
+		exec_cmd(argv[i++]);
+	dup2(outfile, STDOUT_FILENO);
+	ft_exec(argv[i]);
+	if(outfile == -1)
+		exit(EXIT_FAILURE);
+}
+
 int	main(int argc, char *argv[])
 {
 	int	i;
@@ -128,22 +145,22 @@ int	main(int argc, char *argv[])
 	if ((ft_strncmp(argv[1], "here_doc", 8) != 0 && argc >= 5) || argc >= 6)
 	{
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-		{
-			i = 3;
-			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-			get_input(argv[2]);
-		}
+			here_doc(argc, argv);
 		else
 		{
 			i = 2;
-			infile = open(argv[1], O_RDONLY);
-			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			infile = open_file(argv[1],0);
+			if(infile == -1)
+				exit(EXIT_FAILURE);
+			outfile = open_file(argv[argc - 1],1);
 			dup2(infile, STDIN_FILENO);
+			while (i < argc - 2)
+				exec_cmd(argv[i++]);
+			dup2(outfile, STDOUT_FILENO);
+			ft_exec(argv[i]);
+			if(outfile == -1)
+				exit(EXIT_FAILURE);
 		}
-		while (i < argc - 2)
-			exec_cmd(argv[i++]);
-		dup2(outfile, STDOUT_FILENO);
-		ft_exec(argv[i]);
 	}
 	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"), 1);
 }

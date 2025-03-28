@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:35:30 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 16:26:57 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/28 16:54:02 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ char			*substring(char const *s, unsigned int index, char c);
 void			free_all(char **arr, unsigned int i);
 char			**ft_split(char const *s, char c);
 void			cmd_error(char *msg, char *cmd);
+int	open_file(char *argv, int i);
 
 #endif
