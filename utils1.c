@@ -1,0 +1,85 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils1.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
+/*   Updated: 2025/03/28 17:21:54 by haruki           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pipex.h"
+
+extern char	**environ;
+
+char	*get_path(char *argv)
+{
+	char	**paths;
+	int		i;
+	char	*path;
+
+	i = 0;
+	while (*(++environ) != NULL)
+	{
+		if (ft_strncmp(*environ, "PATH=", 5) == 0)
+			break ;
+	}
+	paths = ft_split(*environ + 5, ':');
+	while (paths[i] != NULL)
+	{
+		path = ft_access(paths[i], argv);
+		if (path != NULL)
+			break ;
+		i++;
+	}
+	i = 0;
+	while (paths[i])
+		free(paths[i++]);
+	free(paths);
+	if(path == NULL)
+		cmd_error("zsh: command not found: ", argv);
+	return (path);
+}
+
+int	ft_exec(char *cmd)
+{
+	int		i;
+	char	**args;
+	char	*path;
+
+	i = 0;
+	args = ft_split(cmd, ' ');
+	path = get_path(args[0]);
+	if (path && args)
+		execve(path, args, NULL);
+	while (args && args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+	free(path);
+	return (perror("exec failed"), 1);
+}
+
+int	open_file(char *argv, int i)
+{
+	int	file;
+
+	file = 0;
+	if (i == 0)
+		file = open(argv, O_RDONLY);
+	else if (i == 1)
+		file = open(argv, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if (i == 2)
+		file = open(argv, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (file == -1)
+    {
+        write(2,"zsh: permission denied: ", 24);
+        write(2, argv, ft_strlen(argv));
+        write(2, "\n", 1);
+    }
+	return (file);
+}

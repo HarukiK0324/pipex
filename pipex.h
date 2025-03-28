@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:35:30 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/27 18:22:41 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/28 17:14:41 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,9 @@ unsigned int	count_words(const char *s, char c);
 char			*substring(char const *s, unsigned int index, char c);
 void			free_all(char **arr, unsigned int i);
 char			**ft_split(char const *s, char c);
+void			cmd_error(char *msg, char *cmd);
+int	open_file(char *argv, int i);
+void here_doc(int argc, char *argv[]);
+void	get_input(char *limiter);
 
 #endif

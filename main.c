@@ -6,63 +6,11 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/27 22:54:28 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:06:44 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-extern char	**environ;
-
-char	*get_path(char *argv)
-{
-	char	**paths;
-	int		i;
-	char	*path;
-
-	i = 0;
-	while (*(++environ) != NULL)
-	{
-		if (ft_strncmp(*environ, "PATH=", 5) == 0)
-			break ;
-	}
-	paths = ft_split(*environ + 5, ':');
-	if (!paths || !argv)
-		return (perror("split failed"), NULL);
-	while (paths[i] != NULL)
-	{
-		path = ft_access(paths[i], argv);
-		if (path != NULL)
-			break ;
-		i++;
-	}
-	i = 0;
-	while (paths[i])
-		free(paths[i++]);
-	free(paths);
-	return (path);
-}
-
-int	ft_exec(char *cmd)
-{
-	int		i;
-	char	**args;
-	char	*path;
-
-	i = 0;
-	args = ft_split(cmd, ' ');
-	path = get_path(args[0]);
-	if (path && args)
-		execve(path, args, NULL);
-	while (args && args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-	free(path);
-	return (perror("exec failed"), 1);
-}
 
 void	exec_cmd(char *argv)
 {
@@ -119,31 +67,52 @@ void	get_input(char *limiter)
 	}
 }
 
-int	main(int argc, char *argv[])
+void	here_doc(int argc, char *argv[])
+{
+	int	i;
+	int	outfile;
+
+	i = 3;
+	outfile = open_file(argv[argc - 1], 2);
+	get_input(argv[2]);
+	while (i < argc - 2)
+		exec_cmd(argv[i++]);
+	dup2(outfile, STDOUT_FILENO);
+	if (outfile == -1)
+		exit(EXIT_FAILURE);
+	ft_exec(argv[i]);
+}
+
+void	pipex(int argc, char *argv[])
 {
 	int	i;
 	int	infile;
 	int	outfile;
 
-	if (argc >= 5)
+	i = 2;
+	infile = open_file(argv[1], 0);
+	outfile = open_file(argv[argc - 1], 1);
+	if (infile == -1 && outfile == -1)
+		exit(EXIT_FAILURE);
+	else if (infile == -1)
+		exit(EXIT_FAILURE);
+	dup2(infile, STDIN_FILENO);
+	while (i < argc - 2)
+		exec_cmd(argv[i++]);
+	dup2(outfile, STDOUT_FILENO);
+	if (outfile == -1)
+		exit(EXIT_FAILURE);
+	ft_exec(argv[i]);
+}
+
+int	main(int argc, char *argv[])
+{
+	if ((ft_strncmp(argv[1], "here_doc", 8) != 0 && argc >= 5) || argc >= 6)
 	{
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-		{
-			i = 3;
-			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-			get_input(argv[2]);
-		}
+			here_doc(argc, argv);
 		else
-		{
-			i = 2;
-			infile = open(argv[1], O_RDONLY);
-			outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			dup2(infile, STDIN_FILENO);
-		}
-		while (i < argc - 2)
-			exec_cmd(argv[i++]);
-		dup2(outfile, STDOUT_FILENO);
-		ft_exec(argv[i]);
+			pipex(argc, argv);
 	}
 	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"), 1);
 }
