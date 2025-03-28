@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:36:01 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 16:26:01 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/28 16:30:23 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,5 @@ void	cmd_error(char *msg, char *cmd)
 	write(2,msg,ft_strlen(msg));
 	write(2,cmd,ft_strlen(cmd));
 	write(2,"\n",1);
-	exit(EXIT_FAILURE);
+	exit(127);
 }
