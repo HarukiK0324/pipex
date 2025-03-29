@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 22:10:21 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 22:24:57 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,26 +35,31 @@ void	exec_cmd(char *argv, char *environ[])
 	}
 }
 
+void end_read(char *line)
+{
+	free(line);
+	exit(EXIT_SUCCESS);
+}
+
 void	get_input(char *limiter)
 {
 	pid_t	pid;
 	char	*line;
 	int		fd[2];
 
-	if (pipe(fd) == -1)
-		return (perror("pipe failed"));
+	pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
 		close(fd[0]);
-		line = get_next_line(STDIN_FILENO);
-		while (line)
+		while (1)
 		{
+			line = get_next_line(STDIN_FILENO);
 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
 				&& line[ft_strlen(limiter)] == '\n')
-				exit(0);
+					end_read(line);
 			write(fd[1], line, ft_strlen(line));
-			line = get_next_line(STDIN_FILENO);
+			free(line);
 		}
 	}
 	else
