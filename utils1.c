@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 20:18:44 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 20:53:13 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*get_path(char *argv,char *environ[])
+char	*get_path(char *argv, char *environ[])
 {
 	char	**paths;
 	int		i;
@@ -24,12 +24,12 @@ char	*get_path(char *argv,char *environ[])
 		if (ft_strncmp(*environ, "PATH=", 5) == 0)
 			break ;
 	}
-	if(*environ == NULL)
+	if (*environ == NULL)
 		cmd_error("zsh: command not found: ", argv);
 	paths = ft_split(*environ + 5, ':');
 	path = NULL;
 	while (paths && paths[i] != NULL && path == NULL)
-    	path = ft_access(paths[i++], argv);
+		path = ft_access(paths[i++], argv);
 	i = 0;
 	while (paths[i])
 		free(paths[i++]);
@@ -39,7 +39,7 @@ char	*get_path(char *argv,char *environ[])
 	return (path);
 }
 
-void	ft_exec(char *cmd,char *environ[])
+void	ft_exec(char *cmd, char *environ[])
 {
 	int		i;
 	char	**args;
@@ -47,7 +47,10 @@ void	ft_exec(char *cmd,char *environ[])
 
 	i = 0;
 	args = ft_split(cmd, ' ');
-	path = get_path(args[0],environ);
+	if (access(args[0], F_OK) == 0)
+		path = args[0];
+	else
+		path = get_path(args[0], environ);
 	if (execve(path, args, NULL) == -1)
 	{
 		write(2, "zsh: command not found: ", 24);
@@ -59,7 +62,7 @@ void	ft_exec(char *cmd,char *environ[])
 			i++;
 		}
 		free(args);
-		if(path != NULL)
+		if (path != NULL)
 			free(path);
 		exit(0);
 	}
