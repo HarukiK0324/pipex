@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 19:14:34 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 19:32:41 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ char	*get_path(char *argv)
 	int		i;
 	char	*path;
 
+	if (environ == NULL)
+		cmd_error("zsh: command not found: ", argv);
 	i = 0;
-    if(environ == NULL)
-        cmd_error("zsh: command not found: ", argv);
 	while (*(++environ) != NULL)
 	{
 		if (ft_strncmp(*environ, "PATH=", 5) == 0)
@@ -38,7 +38,7 @@ char	*get_path(char *argv)
 	while (paths[i])
 		free(paths[i++]);
 	free(paths);
-	if(path == NULL)
+	if (path == NULL)
 		cmd_error("zsh: command not found: ", argv);
 	return (path);
 }
@@ -52,20 +52,20 @@ void	ft_exec(char *cmd)
 	i = 0;
 	args = ft_split(cmd, ' ');
 	path = get_path(args[0]);
-    if(execve(path, args, NULL) == -1)
-    {
-        write(2,"zsh: command not found: ", 24);
-        write(2, args[0], ft_strlen(args[0]));
-        write(2, "\n", 1);
-        while (args && args[i])
-        {
-            free(args[i]);
-            i++;
-        }
-        free(args);
-        free(path);
-        exit(0);
-    }
+	if (execve(path, args, NULL) == -1)
+	{
+		write(2, "zsh: command not found: ", 24);
+		write(2, args[0], ft_strlen(args[0]));
+		write(2, "\n", 1);
+		while (args && args[i])
+		{
+			free(args[i]);
+			i++;
+		}
+		free(args);
+		free(path);
+		exit(0);
+	}
 }
 
 int	open_file(char *argv, int i)
@@ -80,10 +80,10 @@ int	open_file(char *argv, int i)
 	else if (i == 2)
 		file = open(argv, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (file == -1)
-    {
-        write(2,"zsh: permission denied: ", 24);
-        write(2, argv, ft_strlen(argv));
-        write(2, "\n", 1);
-    }
+	{
+		write(2, "zsh: permission denied: ", 24);
+		write(2, argv, ft_strlen(argv));
+		write(2, "\n", 1);
+	}
 	return (file);
 }
