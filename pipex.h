@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:35:30 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 21:01:22 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:34:31 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-int				ft_strncmp(const char *s1, const char *s2, unsigned int n);
+int	ft_strcmp(const char *s1, const char *s2);
 char			*ft_access(char *path, char *cmd);
 char			*get_path(char *argv, char *environ[]);
 void			ft_exec(char *cmd, char *environ[]);

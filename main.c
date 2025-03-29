@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 21:01:19 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:34:47 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	get_input(char *limiter)
 		line = get_next_line(STDIN_FILENO);
 		while (line)
 		{
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+			if (ft_strcmp(line, limiter) == 0)
 				exit(0);
 			write(fd[1], line, ft_strlen(line));
 			line = get_next_line(STDIN_FILENO);
