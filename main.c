@@ -6,7 +6,7 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 21:01:19 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:35:59 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,7 @@ int	main(int argc, char *argv[], char *environ[])
 		else
 			pipex(argc, argv, environ);
 	}
-	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"), 0);
+	write(2, "usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2\n", 51);
+	write(2, "usage: ./pipex here_docLIMITER cmd cmd1 file\n", 45Zz);
+	return (0);
 }
