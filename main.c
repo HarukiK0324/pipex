@@ -6,7 +6,7 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 21:36:53 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:56:59 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	get_input(char *limiter)
 		line = get_next_line(STDIN_FILENO);
 		while (line)
 		{
-			if (ft_strcmp(line, limiter) == 0)
+			if (ft_strcmp(line, limiter) == '\n')
 				exit(0);
 			write(fd[1], line, ft_strlen(line));
 			line = get_next_line(STDIN_FILENO);
@@ -103,9 +103,9 @@ void	pipex(int argc, char *argv[], char *environ[])
 
 int	main(int argc, char *argv[], char *environ[])
 {
-	if ((argc >= 5 && ft_strncmp(argv[1], "here_doc", 8) != 0) || argc >= 6)
+	if ((argc >= 5 && ft_strcmp(argv[1], "here_doc") != 0) || argc >= 6)
 	{
-		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+		if (ft_strcmp(argv[1], "here_doc") == 0)
 			here_doc(argc, argv, environ);
 		else
 			pipex(argc, argv, environ);

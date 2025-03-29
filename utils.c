@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:36:01 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 21:34:26 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 21:48:48 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,16 @@ char	*ft_join(char *s1, char *s2)
 	return (str);
 }
 
-int	ft_strcmp(const char *s1, const char *s2)
+int	ft_strncmp(const char *s1, const char *s2, unsigned int n)
 {
-	while (*s1 != '\0' && (*s1 == *s2))
+	while (*s1 != '\0' && (*s1 == *s2) && n > 0)
 	{
 		s1++;
 		s2++;
+		n--;
 	}
+	if (n == 0)
+		return (0);
 	return ((unsigned char)*s1 - (unsigned char)*s2);
 }
 
