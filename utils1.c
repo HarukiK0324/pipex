@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 18:39:06 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 19:14:34 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,17 @@ char	*get_path(char *argv)
 	char	*path;
 
 	i = 0;
+    if(environ == NULL)
+        cmd_error("zsh: command not found: ", argv);
 	while (*(++environ) != NULL)
 	{
 		if (ft_strncmp(*environ, "PATH=", 5) == 0)
 			break ;
 	}
 	paths = ft_split(*environ + 5, ':');
-	while (paths[i] != NULL)
+	while (paths[i] != NULL && path == NULL)
 	{
 		path = ft_access(paths[i], argv);
-		if (path != NULL)
-			break ;
 		i++;
 	}
 	i = 0;
