@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:36:01 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 18:38:12 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 21:01:24 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,8 @@ char	*ft_access(char *path, char *cmd)
 
 void	cmd_error(char *msg, char *cmd)
 {
-	write(2,msg,ft_strlen(msg));
-	write(2,cmd,ft_strlen(cmd));
-	write(2,"\n",1);
+	write(2, msg, ft_strlen(msg));
+	write(2, cmd, ft_strlen(cmd));
+	write(2, "\n", 1);
 	exit(127);
 }
