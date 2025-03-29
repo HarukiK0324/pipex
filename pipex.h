@@ -6,7 +6,7 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:35:30 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 21:51:31 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 22:31:57 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,6 @@ void			cmd_error(char *msg, char *cmd);
 int				open_file(char *argv, int i);
 void			here_doc(int argc, char *argv[], char *environ[]);
 void			get_input(char *limiter);
+void			end_read(char *line);
 
 #endif

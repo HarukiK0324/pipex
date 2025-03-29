@@ -6,7 +6,7 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 22:02:53 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 22:31:52 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,10 @@ int	ft_strcmp(const char *s1, const char *s2)
 		s2++;
 	}
 	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
+
+void	end_read(char *line)
+{
+	free(line);
+	exit(EXIT_SUCCESS);
 }
