@@ -6,13 +6,13 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 19:19:31 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 19:56:32 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exec_cmd(char *argv)
+void	exec_cmd(char *argv,char *environ[])
 {
 	int		fd[2];
 	pid_t	pid;
@@ -26,7 +26,7 @@ void	exec_cmd(char *argv)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		ft_exec(argv);
+		ft_exec(argv,environ);
 	}
 	else
 	{
@@ -64,7 +64,7 @@ void	get_input(char *limiter)
 	}
 }
 
-void	here_doc(int argc, char *argv[])
+void	here_doc(int argc, char *argv[],char *environ[])
 {
 	int	i;
 	int	outfile;
@@ -73,14 +73,14 @@ void	here_doc(int argc, char *argv[])
 	outfile = open_file(argv[argc - 1], 2);
 	get_input(argv[2]);
 	while (i < argc - 2)
-		exec_cmd(argv[i++]);
+		exec_cmd(argv[i++], environ);
 	dup2(outfile, STDOUT_FILENO);
 	if (outfile == -1)
 		exit(EXIT_FAILURE);
-	ft_exec(argv[i]);
+	ft_exec(argv[i],environ);
 }
 
-void	pipex(int argc, char *argv[])
+void	pipex(int argc, char *argv[],char *environ[])
 {
 	int	i;
 	int	infile;
@@ -93,22 +93,22 @@ void	pipex(int argc, char *argv[])
 	outfile = open_file(argv[argc - 1], 1);
 	dup2(infile, STDIN_FILENO);
 	while (i < argc - 2)
-		exec_cmd(argv[i++]);
+		exec_cmd(argv[i++],environ);
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	if (outfile == -1)
 		exit(EXIT_FAILURE);
-	ft_exec(argv[i]);
+	ft_exec(argv[i],environ);
 }
 
-int	main(int argc, char *argv[])
+int	main(int argc, char *argv[], char *environ[])
 {
 	if ((argc >= 5 && ft_strncmp(argv[1], "here_doc", 8) != 0) || argc >= 6)
 	{
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-			here_doc(argc, argv);
+			here_doc(argc, argv,environ);
 		else
-			pipex(argc, argv);
+			pipex(argc, argv,environ);
 	}
 	return (perror("usage: ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2"), 0);
 }

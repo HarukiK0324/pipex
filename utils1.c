@@ -3,37 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:49:41 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 19:32:41 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 20:18:44 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-extern char	**environ;
-
-char	*get_path(char *argv)
+char	*get_path(char *argv,char *environ[])
 {
 	char	**paths;
 	int		i;
 	char	*path;
 
-	if (environ == NULL)
-		cmd_error("zsh: command not found: ", argv);
 	i = 0;
 	while (*(++environ) != NULL)
 	{
 		if (ft_strncmp(*environ, "PATH=", 5) == 0)
 			break ;
 	}
+	if(*environ == NULL)
+		cmd_error("zsh: command not found: ", argv);
 	paths = ft_split(*environ + 5, ':');
-	while (paths[i] != NULL && path == NULL)
-	{
-		path = ft_access(paths[i], argv);
-		i++;
-	}
+	path = NULL;
+	while (paths && paths[i] != NULL && path == NULL)
+    	path = ft_access(paths[i++], argv);
 	i = 0;
 	while (paths[i])
 		free(paths[i++]);
@@ -43,7 +39,7 @@ char	*get_path(char *argv)
 	return (path);
 }
 
-void	ft_exec(char *cmd)
+void	ft_exec(char *cmd,char *environ[])
 {
 	int		i;
 	char	**args;
@@ -51,7 +47,7 @@ void	ft_exec(char *cmd)
 
 	i = 0;
 	args = ft_split(cmd, ' ');
-	path = get_path(args[0]);
+	path = get_path(args[0],environ);
 	if (execve(path, args, NULL) == -1)
 	{
 		write(2, "zsh: command not found: ", 24);
@@ -63,7 +59,8 @@ void	ft_exec(char *cmd)
 			i++;
 		}
 		free(args);
-		free(path);
+		if(path != NULL)
+			free(path);
 		exit(0);
 	}
 }
