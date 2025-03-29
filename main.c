@@ -6,7 +6,7 @@
 /*   By: haruki <haruki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/29 18:34:12 by haruki           ###   ########.fr       */
+/*   Updated: 2025/03/29 19:19:31 by haruki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void	get_input(char *limiter)
 
 void	here_doc(int argc, char *argv[])
 {
-	int i;
-	int outfile;
+	int	i;
+	int	outfile;
 
 	i = 3;
 	outfile = open_file(argv[argc - 1], 2);
@@ -75,7 +75,7 @@ void	here_doc(int argc, char *argv[])
 	while (i < argc - 2)
 		exec_cmd(argv[i++]);
 	dup2(outfile, STDOUT_FILENO);
-    if(outfile == -1)
+	if (outfile == -1)
 		exit(EXIT_FAILURE);
 	ft_exec(argv[i]);
 }
