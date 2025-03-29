@@ -6,23 +6,17 @@
 /*   By: hkasamat <hkasamat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 00:34:47 by hkasamat          #+#    #+#             */
-/*   Updated: 2025/03/28 19:40:01 by hkasamat         ###   ########.fr       */
+/*   Updated: 2025/03/29 17:53:30 by hkasamat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exec_cmd(char *argv, int *infile)
+void	exec_cmd(char *argv)
 {
 	int		fd[2];
 	pid_t	pid;
 
-	if (*infile == -1)
-	{
-		*infile = 0;
-		close(*infile);
-		return ;
-	}
 	if (pipe(fd) == -1)
 		return (perror("pipe failed"));
 	pid = fork();
@@ -79,7 +73,7 @@ void	here_doc(int argc, char *argv[])
 	outfile = open_file(argv[argc - 1], 2);
 	get_input(argv[2]);
 	while (i < argc - 2)
-		exec_cmd(argv[i++], 0);
+		exec_cmd(argv[i++]);
 	dup2(outfile, STDOUT_FILENO);
 	if (outfile == -1)
 		exit(EXIT_FAILURE);
@@ -94,11 +88,14 @@ void	pipex(int argc, char *argv[])
 
 	i = 2;
 	infile = open_file(argv[1], 0);
+	if (infile == -1)
+		infile = open("/dev/null", O_RDONLY);
 	outfile = open_file(argv[argc - 1], 1);
 	dup2(infile, STDIN_FILENO);
 	while (i < argc - 2)
-		exec_cmd(argv[i++], &infile);
+		exec_cmd(argv[i++]);
 	dup2(outfile, STDOUT_FILENO);
+	close(outfile);
 	if (outfile == -1)
 		exit(EXIT_FAILURE);
 	ft_exec(argv[i]);
@@ -106,7 +103,7 @@ void	pipex(int argc, char *argv[])
 
 int	main(int argc, char *argv[])
 {
-	if ((ft_strncmp(argv[1], "here_doc", 8) != 0 && argc >= 5) || argc >= 6)
+	if ((argc >= 5 && ft_strncmp(argv[1], "here_doc", 8) != 0) || argc >= 6)
 	{
 		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 			here_doc(argc, argv);
